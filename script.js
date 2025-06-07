@@ -1,4 +1,6 @@
-// Updated version of "Path of the Primordial Flame" with FCC battle logic integrated + updated demon names (Amon, Lilith, Asmodeus) + cave structure + angelic weapon progression
+// Updated version of "Path of the Primordial Flame" with FCC battle logic integrated + updated demon names (Amon, Lilith, Asmodeus) + cave structure + angelic weapon progression + dynamic images
+
+const sceneImage = document.querySelector("#sceneImage");
 
 let xp = 0;
 let health = 100;
@@ -85,7 +87,16 @@ function update(location) {
   button3.onclick = location["button functions"][2];
   text.innerText = location.text;
 
-  // Cave-specific hover messages
+  if (location.name === "threshold") {
+    sceneImage.src = "./images/baphomet.jpg";
+  } else if (location.name === "sanctum") {
+    sceneImage.src = "./images/sanctum.jpg";
+  } else if (location.name === "cave") {
+    sceneImage.src = "./images/cave.jpg";
+  } else if (location.name === "fall") {
+    sceneImage.src = "./images/fall.jpg";
+  }
+
   if (location.name === "cave") {
     button1.onmouseover = () => {
       text.innerText = "Amon waits in silence — weaker, yet whispers regrets of the past.";
@@ -96,16 +107,11 @@ function update(location) {
     button3.onmouseover = () => {
       text.innerText = "Retreat from the cave, and return to the Black Altar.";
     };
-
-    // Restore cave intro on mouseout
-    const resetText = () => {
-      text.innerText = location.text;
-    };
+    const resetText = () => { text.innerText = location.text; };
     button1.onmouseout = resetText;
     button2.onmouseout = resetText;
     button3.onmouseout = resetText;
   } else {
-    // Remove hover events when leaving cave
     button1.onmouseover = null;
     button2.onmouseover = null;
     button3.onmouseover = null;
@@ -114,7 +120,6 @@ function update(location) {
     button3.onmouseout = null;
   }
 }
-
 
 function returnToThreshold() {
   update(realms[0]);
@@ -149,6 +154,7 @@ function beginBattle() {
   monsterStats.style.display = "block";
   monsterName.innerText = demons[facing].name;
   monsterHealthText.innerText = shadowHealth;
+  sceneImage.src = `./images/${demons[facing].name.toLowerCase()}.jpg`;
 }
 
 function attack() {
@@ -260,5 +266,5 @@ function offerSigil() {
     text.innerText = "You cannot part with your only sigil.";
   }
 }
-update(realms[0]);
 
+update(realms[0]);
