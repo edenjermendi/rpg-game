@@ -53,3 +53,12 @@ button {
   position: relative;
   cursor: pointer;
 }
+
+#sceneImage {
+  width: 100%;
+  aspect-ratio: 16 / 9;  /* Try 4 / 3 if your images are squarer */
+  object-fit: contain;
+  background-color: #0f0f1f;  /* optional: placeholder bg color */
+  display: block;
+  margin: 0 auto;
+}
