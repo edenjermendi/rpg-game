@@ -1,4 +1,4 @@
-// Updated version of "Path of the Primordial Flame" with FCC battle logic integrated + demon-named bosses + cave structure
+// Updated version of "Path of the Primordial Flame" with FCC battle logic integrated + updated demon names (Amon, Lilith, Asmodeus) + cave structure + angelic weapon progression
 
 let xp = 0;
 let health = 100;
@@ -6,7 +6,7 @@ let coins = 50;
 let currentSigil = 0;
 let facing;
 let shadowHealth;
-let inventory = ["rusted sigil"];
+let inventory = ["Sigil of Sandalphon"];
 
 const button1 = document.querySelector('#button1');
 const button2 = document.querySelector("#button2");
@@ -20,15 +20,15 @@ const monsterName = document.querySelector("#monsterName");
 const monsterHealthText = document.querySelector("#monsterHealth");
 
 const sigils = [
-  { name: 'rusted sigil', power: 5 },
-  { name: 'blood rune', power: 30 },
-  { name: 'obsidian glyph', power: 50 },
-  { name: 'primordial seal', power: 100 }
+  { name: 'Sigil of Sandalphon', power: 5 },
+  { name: 'Blade of Gabriel', power: 30 },
+  { name: 'Sword of Michael', power: 50 },
+  { name: 'Sigil of Metatron', power: 100 }
 ];
 
 const demons = [
-  { name: "Vepar", level: 2, health: 15 },
-  { name: "Belphegor", level: 8, health: 60 },
+  { name: "Amon", level: 2, health: 15 },
+  { name: "Lilith", level: 8, health: 60 },
   { name: "Asmodeus", level: 20, health: 300 }
 ];
 
@@ -47,8 +47,8 @@ const realms = [
   },
   {
     name: "cave",
-    "button text": ["Face Vepar", "Face Belphegor", "Return to Threshold"],
-    "button functions": [faceVepar, faceBelphegor, returnToThreshold],
+    "button text": ["Face Amon", "Face Lilith", "Return to Threshold"],
+    "button functions": [faceAmon, faceLilith, returnToThreshold],
     text: "In the cave's gloom, dark entities stir. Choose your battle."
   },
   {
@@ -98,12 +98,12 @@ function enterCave() {
   update(realms[2]);
 }
 
-function faceVepar() {
+function faceAmon() {
   facing = 0;
   beginBattle();
 }
 
-function faceBelphegor() {
+function faceLilith() {
   facing = 1;
   beginBattle();
 }
@@ -181,7 +181,7 @@ function restart() {
   health = 100;
   coins = 50;
   currentSigil = 0;
-  inventory = ["rusted sigil"];
+  inventory = ["Sigil of Sandalphon"];
   goldText.innerText = coins;
   healthText.innerText = health;
   xpText.innerText = xp;
