@@ -1,11 +1,11 @@
-// Updated version of "Path of the Primordial Flame" with FCC battle logic integrated
+// Updated version of "Path of the Primordial Flame" with FCC battle logic integrated + demon-named bosses + cave structure
 
-let energy = 0;
-let vitality = 100;
-let soulCoins = 50;
+let xp = 0;
+let health = 100;
+let coins = 50;
 let currentSigil = 0;
 let facing;
-let shadowVitality;
+let shadowHealth;
 let inventory = ["rusted sigil"];
 
 const button1 = document.querySelector('#button1');
@@ -26,47 +26,53 @@ const sigils = [
   { name: 'primordial seal', power: 100 }
 ];
 
-const shadows = [
-  { name: "withered shadow", level: 2, health: 15 },
-  { name: "lurking sorrow", level: 8, health: 60 },
-  { name: "bound demon", level: 20, health: 300 }
+const demons = [
+  { name: "Vepar", level: 2, health: 15 },
+  { name: "Belphegor", level: 8, health: 60 },
+  { name: "Asmodeus", level: 20, health: 300 }
 ];
 
 const realms = [
   {
     name: "threshold",
-    "button text": ["Enter the Inner Sanctum", "Face a Shadow", "Confront the Demon"],
-    "button functions": [enterSanctum, faceShadow, confrontDemon],
-    text: "You stand between realms. The Inner Sanctum calls, but your Shadows stir."
+    "button text": ["Enter the Sanctum", "Enter the Cave", "Face Asmodeus"],
+    "button functions": [enterSanctum, enterCave, confrontDemon],
+    text: "You stand before the Black Altar. The Sanctum and the Cave await."
   },
   {
     name: "sanctum",
-    "button text": ["Transmute 10 vitality (10 coins)", "Channel new Sigil (30 coins)", "Return to Threshold"],
-    "button functions": [transmuteVitality, channelSigil, returnToThreshold],
+    "button text": ["Transmute 10 health (10 coins)", "Channel new Sigil (30 coins)", "Return to Threshold"],
+    "button functions": [transmuteHealth, channelSigil, returnToThreshold],
     text: "You step into the Sanctum. A flickering brazier glows beside an obsidian altar."
+  },
+  {
+    name: "cave",
+    "button text": ["Face Vepar", "Face Belphegor", "Return to Threshold"],
+    "button functions": [faceVepar, faceBelphegor, returnToThreshold],
+    text: "In the cave's gloom, dark entities stir. Choose your battle."
   },
   {
     name: "confront",
     "button text": ["Attack", "Dodge", "Flee"],
     "button functions": [attack, dodge, returnToThreshold],
-    text: "The presence of the entity thickens the air. Will you fight or flee?"
+    text: "A demonic presence coils around you. Prepare yourself."
   },
   {
     name: "defeat",
     "button text": ["Return", "Return", "Return"],
     "button functions": [returnToThreshold, returnToThreshold, returnToThreshold],
-    text: "The shadow dissipates into the void. You gain energy and coins."
+    text: "The demon vanishes into shadows. You gain XP and coins."
   },
   {
     name: "fall",
     "button text": ["RETRY", "RETRY", "RETRY"],
     "button functions": [restart, restart, restart],
-    text: "You fall into darkness."
+    text: "Your essence fades into the abyss."
   }
 ];
 
 button1.onclick = enterSanctum;
-button2.onclick = faceShadow;
+button2.onclick = enterCave;
 button3.onclick = confrontDemon;
 
 function update(location) {
@@ -88,8 +94,17 @@ function enterSanctum() {
   update(realms[1]);
 }
 
-function faceShadow() {
+function enterCave() {
+  update(realms[2]);
+}
+
+function faceVepar() {
   facing = 0;
+  beginBattle();
+}
+
+function faceBelphegor() {
+  facing = 1;
   beginBattle();
 }
 
@@ -99,32 +114,32 @@ function confrontDemon() {
 }
 
 function beginBattle() {
-  update(realms[2]);
-  shadowVitality = shadows[facing].health;
+  update(realms[3]);
+  shadowHealth = demons[facing].health;
   monsterStats.style.display = "block";
-  monsterName.innerText = shadows[facing].name;
-  monsterHealthText.innerText = shadowVitality;
+  monsterName.innerText = demons[facing].name;
+  monsterHealthText.innerText = shadowHealth;
 }
 
 function attack() {
-  text.innerText = "The " + shadows[facing].name + " lashes out.";
-  text.innerText += " You counter with your " + sigils[currentSigil].name + ".";
-  vitality -= getShadowAttack(shadows[facing].level);
+  text.innerText = "The " + demons[facing].name + " attacks.";
+  text.innerText += " You respond with your " + sigils[currentSigil].name + ".";
+  health -= getDemonAttack(demons[facing].level);
 
   if (shadowHit()) {
-    shadowVitality -= sigils[currentSigil].power + Math.floor(Math.random() * energy) + 1;
+    shadowHealth -= sigils[currentSigil].power + Math.floor(Math.random() * xp) + 1;
   } else {
-    text.innerText += " Your sigil misses its mark.";
+    text.innerText += " Your sigil misses.";
   }
 
-  healthText.innerText = vitality;
-  monsterHealthText.innerText = shadowVitality;
+  healthText.innerText = health;
+  monsterHealthText.innerText = shadowHealth;
 
-  if (vitality <= 0) {
+  if (health <= 0) {
     fall();
-  } else if (shadowVitality <= 0) {
+  } else if (shadowHealth <= 0) {
     if (facing === 2) {
-      text.innerText = "The bound demon is vanquished. You are victorious.";
+      text.innerText = "Asmodeus has been banished. You are victorious!";
     } else {
       defeat();
     }
@@ -136,66 +151,66 @@ function attack() {
   }
 }
 
-function getShadowAttack(level) {
-  const hit = (level * 5) - Math.floor(Math.random() * energy);
+function getDemonAttack(level) {
+  const hit = (level * 5) - Math.floor(Math.random() * xp);
   return hit > 0 ? hit : 0;
 }
 
 function shadowHit() {
-  return Math.random() > 0.2 || vitality < 20;
+  return Math.random() > 0.2 || health < 20;
 }
 
 function dodge() {
-  text.innerText = "You dodge the incoming blow from the " + shadows[facing].name;
+  text.innerText = "You dodge the blow from " + demons[facing].name;
 }
 
 function defeat() {
-  soulCoins += Math.floor(shadows[facing].level * 6.7);
-  energy += shadows[facing].level;
-  goldText.innerText = soulCoins;
-  xpText.innerText = energy;
-  update(realms[3]);
-}
-
-function fall() {
+  coins += Math.floor(demons[facing].level * 6.7);
+  xp += demons[facing].level;
+  goldText.innerText = coins;
+  xpText.innerText = xp;
   update(realms[4]);
 }
 
+function fall() {
+  update(realms[5]);
+}
+
 function restart() {
-  energy = 0;
-  vitality = 100;
-  soulCoins = 50;
+  xp = 0;
+  health = 100;
+  coins = 50;
   currentSigil = 0;
   inventory = ["rusted sigil"];
-  goldText.innerText = soulCoins;
-  healthText.innerText = vitality;
-  xpText.innerText = energy;
+  goldText.innerText = coins;
+  healthText.innerText = health;
+  xpText.innerText = xp;
   returnToThreshold();
 }
 
-function transmuteVitality() {
-  if (soulCoins >= 10) {
-    soulCoins -= 10;
-    vitality += 10;
-    goldText.innerText = soulCoins;
-    healthText.innerText = vitality;
+function transmuteHealth() {
+  if (coins >= 10) {
+    coins -= 10;
+    health += 10;
+    goldText.innerText = coins;
+    healthText.innerText = health;
   } else {
-    text.innerText = "You lack the soul coins to transmute vitality.";
+    text.innerText = "Not enough coins to transmute health.";
   }
 }
 
 function channelSigil() {
   if (currentSigil < sigils.length - 1) {
-    if (soulCoins >= 30) {
-      soulCoins -= 30;
+    if (coins >= 30) {
+      coins -= 30;
       currentSigil++;
-      goldText.innerText = soulCoins;
+      goldText.innerText = coins;
       let newSigil = sigils[currentSigil].name;
       text.innerText = "You have channeled the " + newSigil + ".";
       inventory.push(newSigil);
       text.innerText += " Inventory: " + inventory;
     } else {
-      text.innerText = "Not enough soul coins to channel a new sigil.";
+      text.innerText = "Not enough coins to channel a new sigil.";
     }
   } else {
     text.innerText = "You already hold the most powerful sigil.";
@@ -206,8 +221,8 @@ function channelSigil() {
 
 function offerSigil() {
   if (inventory.length > 1) {
-    soulCoins += 15;
-    goldText.innerText = soulCoins;
+    coins += 15;
+    goldText.innerText = coins;
     let offered = inventory.shift();
     text.innerText = "You offered the " + offered + " to the void.";
     text.innerText += " Inventory: " + inventory;
