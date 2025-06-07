@@ -6,7 +6,7 @@
 
 You are an initiate standing at the Threshold — between realms of shadow and flame. Fight back creeping darkness, unlock ancient sigils, and defeat the bound demon at the heart of your inner world.
 
-### ⚔Core Features
+### Core Features
 - **Three-tier combat system**: Fight an easy, medium, and final boss
 - **XP, health, and coin economy**: Gain power, manage risk, and upgrade gear
 - **Weapon system**: Channel powerful sigils, but beware — they can break!
