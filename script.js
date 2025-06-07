@@ -84,7 +84,37 @@ function update(location) {
   button2.onclick = location["button functions"][1];
   button3.onclick = location["button functions"][2];
   text.innerText = location.text;
+
+  // Cave-specific hover messages
+  if (location.name === "cave") {
+    button1.onmouseover = () => {
+      text.innerText = "Amon waits in silence — weaker, yet whispers regrets of the past.";
+    };
+    button2.onmouseover = () => {
+      text.innerText = "Lilith stirs — fierce and unpredictable, a shadow of hidden hunger.";
+    };
+    button3.onmouseover = () => {
+      text.innerText = "Retreat from the cave, and return to the Black Altar.";
+    };
+
+    // Restore cave intro on mouseout
+    const resetText = () => {
+      text.innerText = location.text;
+    };
+    button1.onmouseout = resetText;
+    button2.onmouseout = resetText;
+    button3.onmouseout = resetText;
+  } else {
+    // Remove hover events when leaving cave
+    button1.onmouseover = null;
+    button2.onmouseover = null;
+    button3.onmouseover = null;
+    button1.onmouseout = null;
+    button2.onmouseout = null;
+    button3.onmouseout = null;
+  }
 }
+
 
 function returnToThreshold() {
   update(realms[0]);
@@ -230,3 +260,5 @@ function offerSigil() {
     text.innerText = "You cannot part with your only sigil.";
   }
 }
+update(realms[0]);
+

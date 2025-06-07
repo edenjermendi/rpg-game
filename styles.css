@@ -48,3 +48,8 @@ button {
   margin: 5px;
   padding: 8px;
 }
+
+.tooltip-btn {
+  position: relative;
+  cursor: pointer;
+}
